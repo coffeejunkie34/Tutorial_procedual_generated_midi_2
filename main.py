@@ -14,29 +14,35 @@ def make_midi(cycle=1):
 
     num = 1
     for i in range(cycle):
-        mf = MIDIFile(1)
+        mf = MIDIFile(2)
 
-        track = 0
-        channel = 0
-        time = 0
-        volume = 100
+        voices = 2
 
-        mf.addProgramChange(track, channel, time, random.randint(0, 127))
-        TEMPO = random.randint(40, 180)
+        for ii in range(voices):
+            print(ii)
+            track = ii
+            channel = ii
+            time = 0
+            volume = 100
+
+            mf.addProgramChange(track, channel, time, random.randint(0, 127))
+            TEMPO = random.randint(40, 180)
 
 
-        mf.addTempo(track, time, TEMPO)
+            mf.addTempo(track, time, TEMPO)
+            if (voices == 0):
+                rythm_list = mr.make_b_rythm(max_bars=70)
+            else:
+                rythm_list = mr.make_rythm(max_bars=70)
 
-        rythm_list = mr.make_rythm(max_bars=70)
-
-        for bar in rythm_list:
-            scale = random.choice(list(SCALE_DICTIONARY.values()))
-            note = random.choice(scale)
-            for step in bar:
-                if random.randint(0, 9) > 2:
-                    note = random.choice(scale)
-                mf.addNote(track, channel, note, time, step, volume)
-                time += step
+            for bar in rythm_list:
+                scale = random.choice(list(SCALE_DICTIONARY.values()))
+                note = random.choice(scale)
+                for step in bar:
+                    if random.randint(0, 9) > 2:
+                        note = random.choice(scale)
+                    mf.addNote(track, channel, note, time, step, volume)
+                    time += step
 
         with open(f"output{num}.mid", "wb") as output:
             mf.writeFile(output)
